@@ -5,11 +5,12 @@ import pandas as pd
 import joblib
 from PIL import Image
 import os
+import io
 
 # ====== 页面设置 ======
 st.set_page_config(
     page_title="木材纹理相似度评估系统 / Wood Texture Similarity System",
-    page_icon="blfu_logo.jpg",  # 相对路径
+    page_icon="blfu_logo.jpg",  # 使用相对路径
     layout="centered"
 )
 
@@ -30,7 +31,7 @@ lang_dict = {
         "sim_col": "模拟主观评分（%）",
         "image_col": "替代材图像",
         "index_label": "排名",
-        "success_msg": "结果已保存至桌面："
+        "success_msg": "结果已保存："
     },
     "en": {
         "title": "Wood Texture Similarity Evaluation System",
@@ -44,7 +45,7 @@ lang_dict = {
         "sim_col": "Simulated Subjective Score (%)",
         "image_col": "Replacement Image",
         "index_label": "Rank",
-        "success_msg": "Results have been saved to Desktop: "
+        "success_msg": "Results have been saved: "
     }
 }
 
@@ -136,20 +137,14 @@ if st.button(lang_dict[lang]["start_btn"]):
         st.dataframe(df)
 
         # ====== 导出 Excel 并提供下载按钮 ======
-        import io
-
-        # 将 DataFrame 写入 BytesIO 对象
         output = io.BytesIO()
         with pd.ExcelWriter(output, engine="openpyxl") as writer:
-        df.to_excel(writer, index_label=lang_dict[lang]["index_label"])
+            df.to_excel(writer, index_label=lang_dict[lang]["index_label"])
         output.seek(0)  # 指针回到开头
 
-        # 显示下载按钮
         st.download_button(
             label="📥 下载结果 Excel",
             data=output,
             file_name="wood_similarity_results.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-)
-
-
+        )
