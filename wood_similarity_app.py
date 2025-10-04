@@ -135,7 +135,21 @@ if st.button(lang_dict[lang]["start_btn"]):
         st.subheader(lang_dict[lang]["results"])
         st.dataframe(df)
 
-        # ====== 导出 Excel ======
-        output_path = os.path.join(os.path.expanduser("~"), "Desktop", "wood_similarity_results.xlsx")
-        df.to_excel(output_path, index_label=lang_dict[lang]["index_label"])
-        st.success(f"{lang_dict[lang]['success_msg']}{output_path}")
+        # ====== 导出 Excel 并提供下载按钮 ======
+        import io
+
+        # 将 DataFrame 写入 BytesIO 对象
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine="openpyxl") as writer:
+        df.to_excel(writer, index_label=lang_dict[lang]["index_label"])
+        output.seek(0)  # 指针回到开头
+
+        # 显示下载按钮
+        st.download_button(
+            label="📥 下载结果 Excel",
+            data=output,
+            file_name="wood_similarity_results.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+)
+
+
