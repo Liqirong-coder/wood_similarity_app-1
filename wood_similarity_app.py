@@ -28,6 +28,7 @@ lang_dict = {
         "warning_upload": "请先上传原材和替代材图像！",
         "results": "🏆 相似度预测结果",
         "likert_col": "里克特量表(1-5)",
+        "likert_desc": "里克特量表为5级，1~5分别代表极不相似、较不相似、一般、较相似、非常相似。",
         "sim_col": "模拟主观评分（%）",
         "image_col": "替代材图像",
         "index_label": "排名",
@@ -42,6 +43,7 @@ lang_dict = {
         "warning_upload": "Please upload both original and replacement images first!",
         "results": "🏆 Similarity Evaluation Results",
         "likert_col": "Likert Scale (1-5)",
+        "likert_desc": "The Likert scale is 5-level: 1–5 correspond to very dissimilar, somewhat dissimilar, neutral, somewhat similar, and very similar.",
         "sim_col": "Simulated Subjective Score (%)",
         "image_col": "Replacement Image",
         "index_label": "Rank",
@@ -136,11 +138,14 @@ if st.button(lang_dict[lang]["start_btn"]):
         st.subheader(lang_dict[lang]["results"])
         st.dataframe(df)
 
+        # 显示里克特量表说明
+        st.markdown(f"ℹ️ {lang_dict[lang]['likert_desc']}")
+
         # ====== 导出 Excel 并提供下载按钮 ======
         output = io.BytesIO()
         with pd.ExcelWriter(output, engine="openpyxl") as writer:
             df.to_excel(writer, index_label=lang_dict[lang]["index_label"])
-        output.seek(0)  # 指针回到开头
+        output.seek(0)
 
         st.download_button(
             label="📥 下载结果 Excel",
