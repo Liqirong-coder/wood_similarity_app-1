@@ -5,3 +5,4 @@ pandas
 Pillow
 joblib
 scikit-learn
+openpyxl
